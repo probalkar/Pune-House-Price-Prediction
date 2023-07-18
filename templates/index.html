@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pune House Price Predictor</title>
+    <style>
+      *{
+        margin: 0;
+      }
+
+      body {
+        background-color: #222;
+        color: #fff;
+        font-family: Arial, sans-serif;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        width: auto;
+        margin: 50px;
+        /* padding-bottom: 7em; */
+      }
+
+      /* label {
+        display: block;
+        margin-bottom: 5px;
+      } */
+
+      select,
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+
+      h1{
+        color: black;
+        text-align: center;
+        padding: 20px;
+        /* background-color: #ccc;
+        width: auto; */
+      }
+
+      .form-row {
+        display: flex;
+      }
+
+      .form-row input[type="text"] {
+        margin-right: 10px;
+      }
+
+      .form-row input[type="text"]:last-child {
+        margin-right: 0;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      h2{
+        text-align: center;
+        padding: 30px;
+        color: black;
+        width: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <form method="post" accept-charset="utf-8">
+      <h1>Pune House Price Predictor</h1>
+      <!-- <label for="dropdown">Dropdown:</label> -->
+      <select id="dropdown" name="location">
+        <option value="" disabled selected>Select location</option>
+        <!-- <option value="option1"></option>
+        <option value="option2"></option>
+        <option value="option3"></option> -->
+        {% for location in locations %}
+            <option value="{{ location }}">{{ location }}</option>
+        {% endfor %}
+      </select>
+      <br /><br />
+
+      <div class="form-row">
+        <input type="text" id="input1" name="bhk" placeholder="Enter BHK"/>
+        <input type="text" id="input2" name="sqft" placeholder="Enter total house area in sqft"/>
+      </div>
+
+      <div class="form-row">
+        <input type="text" id="input3" name="bath" placeholder="Enter number of bathroom(s)"/>
+        <input type="text" id="input4" name="balcony" placeholder="Enter number of balcony(ies)"/>
+      </div>
+
+      <button onclick="send_data()">Predict Price</button>
+
+      <h2><span id="prediction"></span></h2>
+    </form>
+    
+
+    <script>
+
+      function form_handler(event){
+        event.preventDefault(); // Don't submit the form normally
+      }
+
+      function send_data(){
+        document.querySelector('form').addEventListener("submit", form_handler);
+
+        var fd = new FormData(document.querySelector('form'));
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', '/predict', true);
+        document.getElementById("prediction").innerHTML = "Wait Predicting Price!...";
+        xhr.onreadystatechange = function(){
+          if(xhr.readyState == XMLHttpRequest.DONE){
+            document.getElementById('prediction').innerHTML = "Prediction: ₹" + xhr.responseText;
+          }
+        };
+
+        xhr.onload = function(){};
+        xhr.send(fd);
+      }
+
+    </script>
+  </body>
+</html>
